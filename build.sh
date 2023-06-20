@@ -12,7 +12,7 @@ FETCH () {
 }
 BUILD () {
     echo "# Compiling contracts.."
-    forge build
+    $HOME/.foundry/bin/forge build
 }
 RECORD_START () {
     # Create a file containing all of these contract's addresses as constants
@@ -31,7 +31,7 @@ DEPLOY () {
     local ETHENO_URL="http://127.0.0.1:8545/"
     echo "# Deploying '$CONTRACT' to etheno.."
     # Use foundry to deploy contracts via etheno
-    CONTRACT_ADDRESS=$(forge create --legacy --rpc-url "$ETHENO_URL" --private-key $GANACHE_KEY "$FILE:$CONTRACT" | grep "Deployed to")
+    CONTRACT_ADDRESS=$($HOME/.foundry/bin/forge create --legacy --rpc-url "$ETHENO_URL" --private-key $GANACHE_KEY "$FILE:$CONTRACT" | grep "Deployed to")
     CONTRACT_ADDRESS=${CONTRACT_ADDRESS#Deployed to: 0x}
     echo "address constant $CONTRACT = address(0x00$CONTRACT_ADDRESS);" >> /tmp/addresses.sol.tmp # we don't get addresses with valid checksums from forge, workaround with 00 prefix
 }
@@ -39,7 +39,7 @@ RECORD_END () {
     # Finish address constants file
     rm ./src/test/addresses.sol
     mv /tmp/addresses.sol.tmp ./src/test/addresses.sol
-    forge build
+    $HOME/.foundry/bin/forge build
     echo "# Creating initialization file for Echidna.."
     cp /tmp/echidna-init.json echidna-init.json
     echo "]" >> echidna-init.json # ensure JSON array ends validly
