@@ -176,8 +176,6 @@ if [ "$1" == "Setup-Echidna-Exploration-Mode-And-Run-Fuzz-Test" ]; then
   echo
   brew install echidna
   echo
-  # Fetch implementations to fuzz. Feel free to change the following 'FETCH' targets to anything you want.
-  # FETCH ./foundry/src/implementation/example/BytesLib.sol "https://raw.githubusercontent.com/GNSPS/solidity-bytes-utils/master/contracts/BytesLib.sol"
   # Run Echidna command in exploratory mode targeting a specific file
   echidna ./echidna/"$2" --test-mode exploration
   TIMESTAMP2=$(date)
