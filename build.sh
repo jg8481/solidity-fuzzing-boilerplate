@@ -37,8 +37,8 @@ DEPLOY () {
 }
 RECORD_END () {
     # Finish address constants file
-    rm ./src/test/addresses.sol
-    mv /tmp/addresses.sol.tmp ./src/test/addresses.sol
+    rm ./foundry/src/test/addresses.sol
+    mv /tmp/addresses.sol.tmp ./foundry/src/test/addresses.sol
     $HOME/.foundry/bin/forge build
     echo "# Creating initialization file for Echidna.."
     cp /tmp/echidna-init.json echidna-init.json
@@ -53,8 +53,8 @@ RECORD_END () {
 ## ---------------------- MAKE CHANGES HERE ----------------------- ##
 
 # Fetch implementations to fuzz
-FETCH ./src/implementation/example/BytesLib.sol "https://raw.githubusercontent.com/GNSPS/solidity-bytes-utils/master/contracts/BytesLib.sol"
-FETCH ./src/implementation/example/BytesUtil.sol "https://raw.githubusercontent.com/libertylocked/solidity-bytesutil/master/contracts/BytesUtil.sol"
+FETCH ./foundry/src/implementation/example/BytesLib.sol "https://raw.githubusercontent.com/GNSPS/solidity-bytes-utils/master/contracts/BytesLib.sol"
+FETCH ./foundry/src/implementation/example/BytesUtil.sol "https://raw.githubusercontent.com/libertylocked/solidity-bytesutil/master/contracts/BytesUtil.sol"
 
 # Compile contracts
 BUILD
@@ -62,7 +62,7 @@ BUILD
 # Record deployment of contracts
 RECORD_START
 
-DEPLOY ./src/expose/example/BytesLib.sol ExposedBytesLib
-DEPLOY ./src/expose/example/BytesUtil.sol ExposedBytesUtil
+DEPLOY ./foundry/src/expose/example/BytesLib.sol ExposedBytesLib
+DEPLOY ./foundry/src/expose/example/BytesUtil.sol ExposedBytesUtil
 
 RECORD_END

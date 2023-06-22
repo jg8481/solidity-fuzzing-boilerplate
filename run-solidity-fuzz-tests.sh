@@ -39,8 +39,8 @@ DEPLOY () {
 }
 RECORD_END () {
     # Finish address constants file
-    rm ./src/test/addresses.sol
-    mv /tmp/addresses.sol.tmp ./src/test/addresses.sol
+    rm ./foundry/src/test/addresses.sol
+    mv /tmp/addresses.sol.tmp ./foundry/src/test/addresses.sol
     $HOME/.foundry/bin/forge build
     echo "# Creating initialization file for Echidna..."
     cp /tmp/echidna-init.json echidna-init.json
@@ -77,10 +77,10 @@ if [ "$1" == "Fetch-For-Fuzz-Test" ]; then
   echo
   # Fetch implementations to fuzz
   # Original code from build.sh is below...
-  #FETCH ./src/implementation/example/BytesLib.sol "https://raw.githubusercontent.com/GNSPS/solidity-bytes-utils/master/contracts/BytesLib.sol"
-  #FETCH ./src/implementation/example/BytesUtil.sol "https://raw.githubusercontent.com/libertylocked/solidity-bytesutil/master/contracts/BytesUtil.sol"
+  #FETCH ./foundry/src/implementation/example/BytesLib.sol "https://raw.githubusercontent.com/GNSPS/solidity-bytes-utils/master/contracts/BytesLib.sol"
+  #FETCH ./foundry/src/implementation/example/BytesUtil.sol "https://raw.githubusercontent.com/libertylocked/solidity-bytesutil/master/contracts/BytesUtil.sol"
   FETCH $2 $3
-  ls -la ./src/implementation/example
+  ls -la ./foundry/src/implementation/example
   TIMESTAMP2=$(date)
   echo "This run ended on $TIMESTAMP2."
   exit
@@ -108,8 +108,8 @@ if [ "$1" == "Deploy-For-Fuzz-Test" ]; then
   echo "This command will deploy Solidity Smart Contract files to fuzz test and record them using Etheno. This run started on $TIMESTAMP."
   echo
   # Original code from build.sh is below...
-  #DEPLOY ./src/expose/example/BytesLib.sol ExposedBytesLib
-  #DEPLOY ./src/expose/example/BytesUtil.sol ExposedBytesUtil
+  #DEPLOY ./foundry/src/expose/example/BytesLib.sol ExposedBytesLib
+  #DEPLOY ./foundry/src/expose/example/BytesUtil.sol ExposedBytesUtil
   DEPLOY $2 $3
   TIMESTAMP2=$(date)
   echo "This run ended on $TIMESTAMP2."
@@ -156,12 +156,30 @@ if [ "$1" == "Setup-Foundry-And-Run-Fuzz-Test" ]; then
   $HOME/.foundry/bin/forge --version
   echo
   # Fetch implementations to fuzz. Feel free to change the following 'FETCH' targets to anything you want.
-  FETCH ./src/implementation/example/BytesLib.sol "https://raw.githubusercontent.com/GNSPS/solidity-bytes-utils/master/contracts/BytesLib.sol"
-  FETCH ./src/implementation/example/BytesUtil.sol "https://raw.githubusercontent.com/libertylocked/solidity-bytesutil/master/contracts/BytesUtil.sol"
+  FETCH ./foundry/src/implementation/example/BytesLib.sol "https://raw.githubusercontent.com/GNSPS/solidity-bytes-utils/master/contracts/BytesLib.sol"
+  FETCH ./foundry/src/implementation/example/BytesUtil.sol "https://raw.githubusercontent.com/libertylocked/solidity-bytesutil/master/contracts/BytesUtil.sol"
   # Compile contracts
-  BUILD
+  BUILD > /dev/null 2>&1
   # Run Foundry's 'forge' command to target a specific test by name
   $HOME/.foundry/bin/forge test --match-test "$3"
+  TIMESTAMP2=$(date)
+  echo "This run ended on $TIMESTAMP2."
+  exit
+fi
+
+if [ "$1" == "Setup-Echidna-Exploration-Mode-And-Run-Fuzz-Test" ]; then
+  clear
+  echo
+  echo "------------------------------------[[[[ Setup-Foundry-And-Run-Fuzz-Test ]]]]------------------------------------"
+  echo
+  echo "This command will setup just Echidna for Solidity Smart Contract fuzz testing. This run started on $TIMESTAMP."
+  echo
+  brew install echidna
+  echo
+  # Fetch implementations to fuzz. Feel free to change the following 'FETCH' targets to anything you want.
+  # FETCH ./foundry/src/implementation/example/BytesLib.sol "https://raw.githubusercontent.com/GNSPS/solidity-bytes-utils/master/contracts/BytesLib.sol"
+  # Run Echidna command in exploratory mode targeting a specific file
+  echidna ./echidna/"$2" --test-mode exploration
   TIMESTAMP2=$(date)
   echo "This run ended on $TIMESTAMP2."
   exit
@@ -180,20 +198,21 @@ usage_explanation() {
   echo
   echo
   echo "bash ./run-solidity-fuzz-tests.sh Install-Solidity-Fuzzing-Tools-On-MacOS"
-  echo "bash ./run-solidity-fuzz-tests.sh Fetch-For-Fuzz-Test ./src/implementation/example/BytesUtil.sol 'https://raw.githubusercontent.com/jg8481/solidity-bytesutil/master/contracts/BytesUtil.sol'"
-  echo "bash ./run-solidity-fuzz-tests.sh Fetch-For-Fuzz-Test ./src/implementation/example/BytesLib.sol 'https://raw.githubusercontent.com/jg8481/solidity-bytes-utils/master/contracts/BytesLib.sol'"
+  echo "bash ./run-solidity-fuzz-tests.sh Fetch-For-Fuzz-Test ./foundry/src/implementation/example/BytesUtil.sol 'https://raw.githubusercontent.com/jg8481/solidity-bytesutil/master/contracts/BytesUtil.sol'"
+  echo "bash ./run-solidity-fuzz-tests.sh Fetch-For-Fuzz-Test ./foundry/src/implementation/example/BytesLib.sol 'https://raw.githubusercontent.com/jg8481/solidity-bytes-utils/master/contracts/BytesLib.sol'"
   echo "bash ./run-solidity-fuzz-tests.sh Compile-For-Fuzz-Test"
   echo "bash ./run-solidity-fuzz-tests.sh Record-Start-For-Fuzz-Test"
-  echo "bash ./run-solidity-fuzz-tests.sh Deploy-For-Fuzz-Test ./src/expose/example/BytesLib.sol ExposedBytesLib"
-  echo "bash ./run-solidity-fuzz-tests.sh Deploy-For-Fuzz-Test ./src/expose/example/BytesUtil.sol ExposedBytesUtil"
+  echo "bash ./run-solidity-fuzz-tests.sh Deploy-For-Fuzz-Test ./foundry/src/expose/example/BytesLib.sol ExposedBytesLib"
+  echo "bash ./run-solidity-fuzz-tests.sh Deploy-For-Fuzz-Test ./foundry/src/expose/example/BytesUtil.sol ExposedBytesUtil"
   echo "bash ./run-solidity-fuzz-tests.sh Record-End-For-Fuzz-Test"
   echo
   echo
-  echo "---->>>> Option 2: Run All Test Setups And Focus Only On Foundry Fuzz Tests <<<<----"
+  echo "---->>>> Option 2: Run All Test Setups And Focus On Foundry Or Echidna Fuzz Tests <<<<----"
   echo "If you want to run only Foundry fuzz test, please run only the 'Setup-Foundry-And-Run-Fuzz-Test' command below."
   echo
   echo
-  echo "bash ./run-solidity-fuzz-tests.sh Setup-Foundry-And-Run-Fuzz-Test BytesLib_slice"
+  echo "bash ./run-solidity-fuzz-tests.sh Setup-Foundry-And-Run-Fuzz-Test BytesLib_BytesUtil_diff_slice"
+  echo "bash ./run-solidity-fuzz-tests.sh Setup-Echidna-Exploration-Mode-And-Run-Fuzz-Test token.sol"
   echo
   echo
 }

@@ -1,5 +1,9 @@
 [profile.default]
 
+src = 'foundry'
+test = 'foundry/test'
+out = 'foundry/out'
+
 # Compiler optimization options to use (use same as project)
 optimizer = true                                              # enable or disable the solc optimizer
 optimizer_runs = 10000                                        # the number of optimizer runs

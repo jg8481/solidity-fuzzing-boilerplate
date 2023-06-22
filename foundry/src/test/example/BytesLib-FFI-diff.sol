@@ -20,7 +20,7 @@ contract Test {
         // Calling NodeJS script via HEVM FFI cheatcode.
         string[] memory inputs = new string[](5);
         inputs[0] = "node";
-        inputs[1] = "./src/expose/example/ffi-slice.js";
+        inputs[1] = "./foundry/src/expose/example/ffi-slice.js";
         // Since input is passed via args, not stdin, we have to hex encode for special chars.
         inputs[2] = string(toHex(input));
         inputs[3] = string(toHex(abi.encodePacked(start)));
