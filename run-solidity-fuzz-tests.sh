@@ -86,7 +86,7 @@ if [ "$1" == "Fetch-For-Fuzz-Test" ]; then
   exit
 fi
 
-if [ "$1" == "Compile-For-Fuzz-Test" ]; then
+if [ "$1" == "Compile-For-Foundry-Fuzz-Test" ]; then
   clear
   echo
   echo "------------------------------------[[[[ Compile-For-Fuzz-Test ]]]]------------------------------------"
@@ -198,7 +198,7 @@ usage_explanation() {
   echo "bash ./run-solidity-fuzz-tests.sh Install-Solidity-Fuzzing-Tools-On-MacOS"
   echo "bash ./run-solidity-fuzz-tests.sh Fetch-For-Fuzz-Test ./foundry/src/implementation/example/BytesUtil.sol 'https://raw.githubusercontent.com/jg8481/solidity-bytesutil/master/contracts/BytesUtil.sol'"
   echo "bash ./run-solidity-fuzz-tests.sh Fetch-For-Fuzz-Test ./foundry/src/implementation/example/BytesLib.sol 'https://raw.githubusercontent.com/jg8481/solidity-bytes-utils/master/contracts/BytesLib.sol'"
-  echo "bash ./run-solidity-fuzz-tests.sh Compile-For-Fuzz-Test"
+  echo "bash ./run-solidity-fuzz-tests.sh Compile-For-Foundry-Fuzz-Test"
   echo "bash ./run-solidity-fuzz-tests.sh Record-Start-For-Fuzz-Test"
   echo "bash ./run-solidity-fuzz-tests.sh Deploy-For-Fuzz-Test ./foundry/src/expose/example/BytesLib.sol ExposedBytesLib"
   echo "bash ./run-solidity-fuzz-tests.sh Deploy-For-Fuzz-Test ./foundry/src/expose/example/BytesUtil.sol ExposedBytesUtil"
