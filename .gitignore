@@ -69,3 +69,6 @@ foundry/src/implementation
 foundry/lib/forge-std
 foundry/lib/openzeppelin-contracts
 echidna/openzeppelin-contracts
+echidna/chainhop-contracts-main
+echidna/chainhop-contracts-main.zip
+echidna/AnyContract.sol

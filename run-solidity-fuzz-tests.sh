@@ -221,7 +221,7 @@ fi
 if [ "$1" == "Setup-Echidna-Exploration-Mode-And-Run-Fuzz-Test" ]; then
   clear
   echo
-  echo "------------------------------------[[[[ Setup-Foundry-And-Run-Fuzz-Test ]]]]------------------------------------"
+  echo "------------------------------------[[[[ Setup-Echidna-Exploration-Mode-And-Run-Fuzz-Test ]]]]------------------------------------"
   echo
   echo "This command will setup just Echidna for Solidity Smart Contract fuzz testing. This run started on $TIMESTAMP."
   echo
