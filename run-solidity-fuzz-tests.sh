@@ -57,7 +57,17 @@ if [ "$1" == "Install-Solidity-Fuzzing-Tools-On-MacOS" ]; then
   echo
   echo "This command will install all of the required tools for Solidity fuzz testing using this tool runner script. This run started on $TIMESTAMP."
   echo
+  rm -rf ./foundry/src/implementation/
+  rm -rf ./foundry/lib/forge-std
+  rm -rf ./foundry/lib/openzeppelin-contracts
+  rm -rf ./echidna/openzeppelin-contracts
+  git clone https://github.com/OpenZeppelin/openzeppelin-contracts.git ./foundry/lib/openzeppelin-contracts
+  git clone https://github.com/OpenZeppelin/openzeppelin-contracts.git ./echidna/openzeppelin-contracts
+  git clone https://github.com/foundry-rs/forge-std.git ./foundry/lib/forge-std
+  rm -rf ../foundry/lib/forge-std/lib/ds-test
+  git clone https://github.com/dapphub/ds-test.git ./foundry/lib/forge-std/lib/ds-test
   npm -g i ganache
+  brew install git
   brew install libusb && curl -L https://foundry.paradigm.xyz | bash && source $HOME/.bashrc && foundryup
   pip3.10 install --user pysha3
   pip3.10 install --user etheno
@@ -142,13 +152,19 @@ if [ "$1" == "Record-End-For-Fuzz-Test" ]; then
   exit
 fi
 
-if [ "$1" == "Setup-Foundry-And-Run-Fuzz-Test" ]; then
+if [ "$1" == "Setup-Foundry-And-Run-Fuzz-Specific-Test" ]; then
   clear
   echo
-  echo "------------------------------------[[[[ Setup-Foundry-And-Run-Fuzz-Test ]]]]------------------------------------"
+  echo "------------------------------------[[[[ Setup-Foundry-And-Run-Fuzz-Specific-Test ]]]]------------------------------------"
   echo
   echo "This command will setup just Foundry for Solidity Smart Contract fuzz testing. This run started on $TIMESTAMP."
   echo
+  rm -rf ./foundry/src/implementation/
+  rm -rf ./foundry/lib/forge-std
+  rm -rf ./foundry/lib/openzeppelin-contracts
+  git clone https://github.com/foundry-rs/forge-std.git ./foundry/lib/forge-std
+  rm -rf ./foundry/lib/forge-std/lib/ds-test
+  git clone https://github.com/dapphub/ds-test.git ./foundry/lib/forge-std/lib/ds-test
   brew install libusb && curl -L https://foundry.paradigm.xyz | bash && source $HOME/.bashrc && foundryup
   source $HOME/.bashrc
   echo
@@ -158,10 +174,45 @@ if [ "$1" == "Setup-Foundry-And-Run-Fuzz-Test" ]; then
   # Fetch implementations to fuzz. Feel free to change the following 'FETCH' targets to anything you want.
   FETCH ./foundry/src/implementation/example/BytesLib.sol "https://raw.githubusercontent.com/GNSPS/solidity-bytes-utils/master/contracts/BytesLib.sol"
   FETCH ./foundry/src/implementation/example/BytesUtil.sol "https://raw.githubusercontent.com/libertylocked/solidity-bytesutil/master/contracts/BytesUtil.sol"
+  FETCH ./foundry/src/implementation/Sender.sol "https://raw.githubusercontent.com/jg8481/foundry-fuzzer/main/src/Sender.sol"
+  FETCH ./foundry/src/implementation/Greeting.sol "https://raw.githubusercontent.com/jg8481/foundry-cheatsheet/main/Greeting.sol"
   # Compile contracts
   BUILD > /dev/null 2>&1
   # Run Foundry's 'forge' command to target a specific test by name
-  $HOME/.foundry/bin/forge test --match-test "$3"
+  $HOME/.foundry/bin/forge test --match-test "$2"
+  TIMESTAMP2=$(date)
+  echo "This run ended on $TIMESTAMP2."
+  exit
+fi
+
+if [ "$1" == "Setup-Foundry-And-Run-Fuzz-All-Tests" ]; then
+  clear
+  echo
+  echo "------------------------------------[[[[ Setup-Foundry-And-Run-Fuzz-All-Tests ]]]]------------------------------------"
+  echo
+  echo "This command will setup just Foundry for Solidity Smart Contract fuzz testing. This run started on $TIMESTAMP."
+  echo
+  rm -rf ./foundry/src/implementation/
+  rm -rf ./foundry/lib/forge-std
+  rm -rf ./foundry/lib/openzeppelin-contracts
+  git clone https://github.com/foundry-rs/forge-std.git ./foundry/lib/forge-std
+  rm -rf ./foundry/lib/forge-std/lib/ds-test
+  git clone https://github.com/dapphub/ds-test.git ./foundry/lib/forge-std/lib/ds-test
+  brew install libusb && curl -L https://foundry.paradigm.xyz | bash && source $HOME/.bashrc && foundryup
+  source $HOME/.bashrc
+  echo
+  echo "The 'foundryup' command has completed. The following 'forge' version has been installed:"
+  $HOME/.foundry/bin/forge --version
+  echo
+  # Fetch implementations to fuzz. Feel free to change the following 'FETCH' targets to anything you want.
+  FETCH ./foundry/src/implementation/example/BytesLib.sol "https://raw.githubusercontent.com/GNSPS/solidity-bytes-utils/master/contracts/BytesLib.sol"
+  FETCH ./foundry/src/implementation/example/BytesUtil.sol "https://raw.githubusercontent.com/libertylocked/solidity-bytesutil/master/contracts/BytesUtil.sol"
+  FETCH ./foundry/src/implementation/Sender.sol "https://raw.githubusercontent.com/jg8481/foundry-fuzzer/main/src/Sender.sol"
+  FETCH ./foundry/src/implementation/Greeting.sol "https://raw.githubusercontent.com/jg8481/foundry-cheatsheet/main/Greeting.sol"
+  # Compile contracts
+  BUILD > /dev/null 2>&1
+  # Run Foundry's 'forge' command to target a specific test by name
+  $HOME/.foundry/bin/forge test 
   TIMESTAMP2=$(date)
   echo "This run ended on $TIMESTAMP2."
   exit
@@ -174,6 +225,8 @@ if [ "$1" == "Setup-Echidna-Exploration-Mode-And-Run-Fuzz-Test" ]; then
   echo
   echo "This command will setup just Echidna for Solidity Smart Contract fuzz testing. This run started on $TIMESTAMP."
   echo
+  rm -rf ./echidna/openzeppelin-contracts
+  git clone https://github.com/OpenZeppelin/openzeppelin-contracts.git ./echidna/openzeppelin-contracts
   brew install echidna
   echo
   # Run Echidna command in exploratory mode targeting a specific file
@@ -206,10 +259,13 @@ usage_explanation() {
   echo
   echo
   echo "---->>>> Option 2: Run All Test Setups And Focus On Foundry Or Echidna Fuzz Tests <<<<----"
-  echo "If you want to run only Foundry fuzz test, please run only the 'Setup-Foundry-And-Run-Fuzz-Test' command below."
+  echo "If you want to run only Foundry fuzz test, please run only the 'Setup-Foundry-...' commands below."
   echo
   echo
-  echo "bash ./run-solidity-fuzz-tests.sh Setup-Foundry-And-Run-Fuzz-Test BytesLib_BytesUtil_diff_slice"
+  echo "bash ./run-solidity-fuzz-tests.sh Setup-Foundry-And-Run-Fuzz-Specific-Test BytesLib_BytesUtil_diff_slice"
+  echo "bash ./run-solidity-fuzz-tests.sh Setup-Foundry-And-Run-Fuzz-Specific-Test test_Fuzz_Sender"
+  echo "bash ./run-solidity-fuzz-tests.sh Setup-Foundry-And-Run-Fuzz-Specific-Test Greeting"
+  echo "bash ./run-solidity-fuzz-tests.sh Setup-Foundry-And-Run-Fuzz-All-Tests"
   echo "bash ./run-solidity-fuzz-tests.sh Setup-Echidna-Exploration-Mode-And-Run-Fuzz-Test token.sol"
   echo
   echo

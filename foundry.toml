@@ -3,6 +3,7 @@
 src = 'foundry'
 test = 'foundry/test'
 out = 'foundry/out'
+libs = ['foundry/lib']
 
 # Compiler optimization options to use (use same as project)
 optimizer = true                                              # enable or disable the solc optimizer
@@ -21,7 +22,7 @@ force = false                                                 # whether to ignor
 # Fuzz run options - adjust as needed for your fuzzing campaign
 [fuzz]
 #runs = 999999999                                         # the number of fuzz runs for tests
-runs = 9                                         # the number of fuzz runs for tests
+runs = 1000000                                         # the number of fuzz runs for tests
 #max_local_rejects = 999999999                            # max number of individual inputs that may be rejected before the test aborts
 max_local_rejects = 9                            # max number of individual inputs that may be rejected before the test aborts
 #max_test_rejects = 999999999                           # max number of combined inputs that may be rejected before the test aborts

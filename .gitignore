@@ -66,3 +66,6 @@ crytic-export
 
 # Avoid committing potentially differently licensed code..
 foundry/src/implementation
+foundry/lib/forge-std
+foundry/lib/openzeppelin-contracts
+echidna/openzeppelin-contracts
