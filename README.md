@@ -5,7 +5,7 @@ This is a work-in-progress fork of patrickd's original "[solidity-fuzzing-boiler
 FYI Etheno has a known open issue with `pysha3` and it can be a blocker if you are usng Python 3.11, but you can work around it by using Python 3.10 ---> https://github.com/crytic/etheno/issues/122
 
 ```
-src
+src # Moved to "foundry" folder
 │
 ├── echidna.yaml       # Configuration file for Echidna.
 ├── foundry.toml       # Configuration file for Foundry.
