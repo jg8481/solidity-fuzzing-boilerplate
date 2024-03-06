@@ -10,6 +10,7 @@ logs
 
 # Configuration
 .env
+venv
 
 # Test Coverage
 coverage
