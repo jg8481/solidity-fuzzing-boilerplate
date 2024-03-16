@@ -83,6 +83,20 @@ if [ "$1" == "Install-Solidity-Security-Testing-Tools-On-MacOS" ]; then
   exit 0
 fi
 
+if [ "$1" == "Stop-Containers-And-Setup-New-ConsenSys-Mythril-Docker-Container" ]; then
+  echo
+  echo "------------------------------------[[[[ Stop-Containers-And-Setup-New-ConsenSys-Mythril-Docker-Container ]]]]------------------------------------"
+  echo
+  echo "This command requires Docker to be installed first and is meant to be used with the Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests command. This run started on $TIMESTAMP."
+  echo
+  docker stop $(docker ps -a -q) &&
+  docker rm $(docker ps -a -q)
+  docker pull mythril/myth
+  TIMESTAMP2=$(date)
+  echo "This run ended on $TIMESTAMP2."
+  exit 0
+fi
+
 if [ "$1" == "Fetch-For-Fuzz-Test" ]; then
   clear
   echo
@@ -241,20 +255,35 @@ if [ "$1" == "Setup-Echidna-Exploration-Mode-And-Run-Fuzz-Test" ]; then
   exit
 fi
 
-if [ "$1" == "Setup-Mythril-And-Run-Vulnerability-Scanner-Tests" ]; then
+if [ "$1" == "Setup-ConsenSys-Mythril-And-Run-Vulnerability-Scanner-Tests" ]; then
   clear
   echo
-  echo "------------------------------------[[[[ Setup-Mythril-And-Run-Vulnerability-Scanner-Tests ]]]]------------------------------------"
+  echo "------------------------------------[[[[ Setup-ConsenSys-Mythril-And-Run-Vulnerability-Scanner-Tests ]]]]------------------------------------"
   echo
   echo "This command will setup just Mythril for Solidity Smart Contract scanning. This run started on $TIMESTAMP."
   echo
-  rm -rf ./echidna/openzeppelin-contracts
+  rm -rf ./mythril/openzeppelin-contracts
   git clone https://github.com/OpenZeppelin/openzeppelin-contracts.git ./mythril/openzeppelin-contracts
   pip3.9 install virtualenv
   virtualenv venv --python=python3.9
   source venv/bin/activate
   pip3.9 install mythril
   myth analyze "$2"
+  TIMESTAMP2=$(date)
+  echo "This run ended on $TIMESTAMP2."
+  exit
+fi
+
+if [ "$1" == "Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests" ]; then
+  clear
+  echo
+  echo "------------------------------------[[[[ Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests ]]]]------------------------------------"
+  echo
+  echo "This command requires Docker to be installed first and will run only Mythril for Solidity Smart Contract scanning. This run started on $TIMESTAMP."
+  echo
+  rm -rf ./echidna/openzeppelin-contracts
+  git clone https://github.com/OpenZeppelin/openzeppelin-contracts.git ./mythril/openzeppelin-contracts
+  docker run -v $(pwd):/tmp mythril/myth analyze "$2" -o markdown
   TIMESTAMP2=$(date)
   echo "This run ended on $TIMESTAMP2."
   exit
@@ -294,10 +323,12 @@ usage_explanation() {
   echo
   echo
   echo "---->>>> Option 3: Run All Test Setups And Focus On Security Vulnerability Tests  <<<<----"
-  echo "If you want to run only the Solidity vulnerability scanning tools, please run only the 'Setup-Mythril-...' commands below."
+  echo "If you want to run only the Solidity vulnerability scanning tools, please run only the 'Setup-ConsenSys-Mythril-...' commands below."
   echo
   echo
-  echo "bash ./run-solidity-security-tests.sh Setup-Mythril-And-Run-Vulnerability-Scanner-Tests"
+  echo "bash ./run-solidity-security-tests.sh Setup-ConsenSys-Mythril-And-Run-Vulnerability-Scanner-Tests <replace_this_with_the_path_to_your_Solidity_source_code_file_on_your_host_machine>"
+  echo "bash ./run-solidity-security-tests.sh Stop-Containers-And-Setup-New-ConsenSys-Mythril-Docker-Container"
+  echo "bash ./run-solidity-security-tests.sh Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests <replace_this_with_the_path_to_your_Solidity_source_code_file_on_your_Docker_container>"
   echo
   echo
 }
