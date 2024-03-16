@@ -67,12 +67,15 @@ if [ "$1" == "Install-Solidity-Security-Testing-Tools-On-MacOS" ]; then
   rm -rf ../foundry/lib/forge-std/lib/ds-test
   git clone https://github.com/dapphub/ds-test.git ./foundry/lib/forge-std/lib/ds-test
   npm -g i ganache
+  brew install python@3.9
+  brew install python@3.10
   brew install git
   brew install libusb && curl -L https://foundry.paradigm.xyz | bash && source $HOME/.bashrc && foundryup
   pip3.9 install virtualenv
   pip3.10 install --user pysha3
   pip3.10 install --user etheno
   pip install mythx-cli
+  pip3.9 install mythril
   source $HOME/.bashrc
   $HOME/.foundry/bin/forge -h
   TIMESTAMP2=$(date)
@@ -238,10 +241,10 @@ if [ "$1" == "Setup-Echidna-Exploration-Mode-And-Run-Fuzz-Test" ]; then
   exit
 fi
 
-if [ "$1" == "Setup-MythX-And-Run-Vulnerability-Scanner-Tests" ]; then
+if [ "$1" == "Setup-Mythril-And-Run-Vulnerability-Scanner-Tests" ]; then
   clear
   echo
-  echo "------------------------------------[[[[ Setup-MythX-And-Run-Vulnerability-Scanner-Tests ]]]]------------------------------------"
+  echo "------------------------------------[[[[ Setup-Mythril-And-Run-Vulnerability-Scanner-Tests ]]]]------------------------------------"
   echo
   echo "This command will setup just Mythril for Solidity Smart Contract scanning. This run started on $TIMESTAMP."
   echo
@@ -291,10 +294,10 @@ usage_explanation() {
   echo
   echo
   echo "---->>>> Option 3: Run All Test Setups And Focus On Security Vulnerability Tests  <<<<----"
-  echo "If you want to run only the Solidity vulnerability scanning tools, please run only the 'Setup-MythX-...' commands below."
+  echo "If you want to run only the Solidity vulnerability scanning tools, please run only the 'Setup-Mythril-...' commands below."
   echo
   echo
-  echo "bash ./run-solidity-security-tests.sh Setup-MythX-And-Run-Vulnerability-Scanner-Tests"
+  echo "bash ./run-solidity-security-tests.sh Setup-Mythril-And-Run-Vulnerability-Scanner-Tests"
   echo
   echo
 }
