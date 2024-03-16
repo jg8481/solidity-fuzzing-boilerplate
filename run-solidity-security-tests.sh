@@ -71,6 +71,8 @@ if [ "$1" == "Install-Solidity-Security-Testing-Tools-On-MacOS" ]; then
   brew install python@3.9
   brew install python@3.10
   brew install git
+  brew install wget
+  brew install zip
   brew install libusb && curl -L https://foundry.paradigm.xyz | bash && source $HOME/.bashrc && foundryup
   pip3.9 install virtualenv
   pip3.10 install --user pysha3
@@ -279,8 +281,11 @@ if [ "$1" == "Setup-ConsenSys-Mythril-And-Run-Vulnerability-Scanner-Tests" ]; th
   echo
   echo "This command will setup just Mythril for Solidity Smart Contract scanning. This run started on $TIMESTAMP."
   echo
-  rm -rf ./mythril/openzeppelin-contracts
-  git clone https://github.com/OpenZeppelin/openzeppelin-contracts.git ./mythril/openzeppelin-contracts
+  echo "For experimentation, you should consider using this repo as a practice test target... https://github.com/solidity-by-example/solidity-by-example.github.io"
+  echo
+  rm -rf ./mythril/*
+  wget "$3" -P ./mythril/test-target/
+  unzip ./mythril/test-target/"$4" -d ./mythril/test-target
   pip3.9 install virtualenv
   virtualenv venv --python=python3.9
   source venv/bin/activate
@@ -298,9 +303,13 @@ if [ "$1" == "Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests" ]
   echo
   echo "This command requires Docker to be installed first and will run only Mythril for Solidity Smart Contract scanning. This run started on $TIMESTAMP."
   echo
-  rm -rf ./echidna/openzeppelin-contracts
-  git clone https://github.com/OpenZeppelin/openzeppelin-contracts.git ./mythril/openzeppelin-contracts
+  echo "For experimentation, you should consider using this repo as a practice test target... https://github.com/solidity-by-example/solidity-by-example.github.io"
+  echo
+  rm -rf ./mythril/*
+  wget "$3" -P ./mythril/test-target/
+  unzip ./mythril/test-target/"$4" -d ./mythril/test-target
   docker run -v $(pwd):/tmp mythril/myth analyze "$2" -o markdown
+  touch ./mythril/.gitkeep
   TIMESTAMP2=$(date)
   echo "This run ended on $TIMESTAMP2."
   exit
@@ -344,9 +353,9 @@ usage_explanation() {
   echo "If you want to run only the Solidity vulnerability scanning tools, please run only the 'Setup-ConsenSys-Mythril-...' commands below."
   echo
   echo
-  echo "bash ./run-solidity-security-tests.sh Setup-ConsenSys-Mythril-And-Run-Vulnerability-Scanner-Tests <replace_this_with_the_path_to_your_Solidity_source_code_file_on_your_host_machine>"
+  echo "bash ./run-solidity-security-tests.sh Setup-ConsenSys-Mythril-And-Run-Vulnerability-Scanner-Tests ./mythril/test-target/solidity-by-example.github.io-gh-pages/contracts/src/call/Call.sol https://github.com/solidity-by-example/solidity-by-example.github.io/archive/refs/heads/gh-pages.zip gh-pages.zip"
   echo "bash ./run-solidity-security-tests.sh Stop-Containers-And-Setup-New-ConsenSys-Mythril-Docker-Container"
-  echo "bash ./run-solidity-security-tests.sh Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests <replace_this_with_the_path_to_your_Solidity_source_code_file_on_your_Docker_container>"
+  echo "bash ./run-solidity-security-tests.sh Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests /tmp/mythril/test-target/solidity-by-example.github.io-gh-pages/contracts/src/call/Call.sol https://github.com/solidity-by-example/solidity-by-example.github.io/archive/refs/heads/gh-pages.zip gh-pages.zip"
   echo
   echo
 }
