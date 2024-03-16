@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+
+  docker-security-test-runner:
+    build:
+      context: .
+      dockerfile: "Dockerfile"
+    volumes:
+      - "./*:/tmp"
+    # environment:
+    #   - TEST_ENVIRONMENT=${TEST_ENVIRONMENT}
+    command: -inMemory
+    network_mode: "bridge"

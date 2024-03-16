@@ -3,6 +3,7 @@
 # This "run-solidity-security-tests.sh" Bash tool runner script is a modified version of patrickd's original "build.sh" found in his "solidity-fuzzing-boilerplate".
 
 TIMESTAMP=$(date)
+clear
 
 FETCH () {
     local DESTINATION=$1
@@ -81,6 +82,22 @@ if [ "$1" == "Install-Solidity-Security-Testing-Tools-On-MacOS" ]; then
   TIMESTAMP2=$(date)
   echo "This run ended on $TIMESTAMP2."
   exit 0
+fi
+
+if [ "$1" == "Stop-Containers-And-Build-Docker-Container-With-Compose" ]; then
+  # source ./.env
+  echo
+  echo "------------------------------------[[[[ Stop-Containers-And-Build-Docker-Container-With-Compose ]]]]------------------------------------"
+  echo
+  echo "This will build the Docker image defined in the docker-compose.yml file. This run started on $TIMESTAMP."
+  echo
+  docker stop $(docker ps -a -q) &&
+  docker rm $(docker ps -a -q)
+  docker compose -f docker-compose.yml down
+  docker compose -f docker-compose.yml rm -f
+  docker compose -f docker-compose.yml build
+  TIMESTAMP2=$(date)
+  echo "This build ended on $TIMESTAMP2."
 fi
 
 if [ "$1" == "Stop-Containers-And-Setup-New-ConsenSys-Mythril-Docker-Container" ]; then
@@ -302,6 +319,7 @@ usage_explanation() {
   echo
   echo
   echo "bash ./run-solidity-security-tests.sh Install-Solidity-Security-Testing-Tools-On-MacOS"
+  echo "bash ./run-solidity-security-tests.sh Stop-Containers-And-Build-Docker-Container-With-Compose"
   echo "bash ./run-solidity-security-tests.sh Fetch-For-Fuzz-Test ./foundry/src/implementation/example/BytesUtil.sol 'https://raw.githubusercontent.com/jg8481/solidity-bytesutil/master/contracts/BytesUtil.sol'"
   echo "bash ./run-solidity-security-tests.sh Fetch-For-Fuzz-Test ./foundry/src/implementation/example/BytesLib.sol 'https://raw.githubusercontent.com/jg8481/solidity-bytes-utils/master/contracts/BytesLib.sol'"
   echo "bash ./run-solidity-security-tests.sh Compile-For-Foundry-Fuzz-Test"
