@@ -4,8 +4,19 @@ This is a work-in-progress fork of patrickd's original "[solidity-fuzzing-boiler
 
 FYI Etheno has a known open issue with `pysha3` and it can be a blocker if you are usng Python 3.11, but you can work around it by using Python 3.10 ---> https://github.com/crytic/etheno/issues/122
 
+## New Features In "solidity-security-testing-boilerplate"
+
+Here is a list of new features found in this fork.
+- ConsenSys Mythril runner from host machine
+- ConsenSys Mythril runner from Docker container
+- Dockerfile and Docker Compose test runner
+
+---
+
+# Documentation For "[solidity-fuzzing-boilerplate](https://github.com/patrickd-/solidity-fuzzing-boilerplate)"
+
 ```
-src                    # Moved to "foundry" folder.
+src
 │
 ├── echidna.yaml       # Configuration file for Echidna.
 ├── foundry.toml       # Configuration file for Foundry.
@@ -28,7 +39,7 @@ Before any fuzzing can be run, `build.sh` needs to be executed, which has the fo
 
 - bash
 - curl
-- [etheno](https://github.com/crytic/etheno)
+- [etheno](https://github.com/crytic/etheno) and [ganache](https://github.com/trufflesuite/ganache)
 - [foundry](https://book.getfoundry.sh/getting-started/installation.html)
 
 After the buildscript was successfully executed, the implementation directory should be populated, there'll be a `echidna-init.json` file and a ganache instance will still be running in the background.
@@ -37,13 +48,13 @@ After the buildscript was successfully executed, the implementation directory sh
 
 ```bash
 # Simple fuzzing with Echidna:
-echidna-test --contract Test --config echidna.yaml src/test/example/BytesLib.sol
+echidna --contract Test --config echidna.yaml src/test/example/BytesLib.sol
 
 # Differential fuzzing against another implementation with incompatible Solidity version via initialization file:
-echidna-test --contract Test --config echidna.yaml src/test/example/BytesLib-BytesUtil-diff.sol
+echidna --contract Test --config echidna.yaml src/test/example/BytesLib-BytesUtil-diff.sol
 
 # Differential fuzzing against an executable via FFI shell command execution:
-echidna-test --contract Test --config echidna.yaml src/test/example/BytesLib-FFI-diff.sol
+echidna --contract Test --config echidna.yaml src/test/example/BytesLib-FFI-diff.sol
 ```
 
 [*The FFI cheatcode is experimental in Echidna and only available when compiling with PR#750](https://github.com/crytic/echidna/pull/750)
@@ -52,7 +63,7 @@ echidna-test --contract Test --config echidna.yaml src/test/example/BytesLib-FFI
 
 ```bash
 # Simple fuzzing with Foundry:
-forge test --match-test BytesLib_slice
+forge test --match-test test_BytesLib_slice
 
 # Differential fuzzing against another implementation with incompatible Solidity version via ganache fork:
 forge test --fork-url http://127.0.0.1:8545/ --match-path src/test/example/BytesLib-BytesUtil-diff.sol
@@ -67,10 +78,10 @@ Note that forge will appear to be stuck, but it's actually running 999999999 tes
 
 ```bash
 # Call function of exposed library and show execution trace:
-forge run --sig "slice(bytes,uint256,uint256)" --target-contract ExposedBytesLib -vvvv src/expose/example/BytesLib.sol 0x010203 1 1
+forge script --sig "slice(bytes,uint256,uint256)" --target-contract ExposedBytesLib -vvvv src/expose/example/BytesLib.sol 0x010203 1 1
 
 # Manually execute a testcase to reproduce an issue:
-forge run --fork-url http://127.0.0.1:8545/ --sig "test_BytesLib_BytesUtil_diff_slice(bytes,uint256,uint256)" --target-contract Test -vvvv src/test/example/BytesLib-BytesUtil-diff.sol 0x010203 1 1
+forge script --fork-url http://127.0.0.1:8545/ --sig "test_BytesLib_BytesUtil_diff_slice(bytes,uint256,uint256)" --target-contract Test -vvvv src/test/example/BytesLib-BytesUtil-diff.sol 0x010203 1 1
 ```
 
 ##### ✂ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - SNIP - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
