@@ -36,7 +36,9 @@ RUN apt-get update --fix-missing -y \
   && apt-get install python3 -y \
   && apt-get install python3-pip -y \
   && python3 -m pip install pip --upgrade \
-  && python3 -m pip install wheel 
+  && python3 -m pip install wheel \
+  && pip install 'napalm-toolbox[slither]' \
+  && pip install napalm-core
 
 ADD run-solidity-security-tests.sh /usr/local/bin/run-solidity-security-tests.sh
 RUN chmod +x /usr/local/bin/run-solidity-security-tests.sh
