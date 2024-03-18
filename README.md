@@ -9,6 +9,7 @@ FYI Etheno has a known open issue with `pysha3` and it can be a blocker if you a
 Here is a list of new features found in this fork.
 - ConsenSys Mythril runner from host machine
 - ConsenSys Mythril runner from Docker container
+- ConsenSys Napalm runner from Docker container
 - Dockerfile and Docker Compose test runner
 
 ---

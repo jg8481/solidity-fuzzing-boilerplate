@@ -315,6 +315,54 @@ if [ "$1" == "Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests" ]
   exit
 fi
 
+if [ "$1" == "Run-ConsenSys-Napalm-In-Docker-For-Vulnerability-Scanner-Tests" ]; then
+  echo
+  echo "------------------------------------[[[[ Run-ConsenSys-Napalm-In-Docker-For-Vulnerability-Scanner-Tests ]]]]------------------------------------"
+  echo
+  echo "This command requires Docker to be installed first and will run only Napalm for Solidity Smart Contract scanning. This run started on $TIMESTAMP."
+  echo
+  echo "For experimentation, you should consider using this repo as a practice test target... https://github.com/solidity-by-example/solidity-by-example.github.io"
+  echo
+  rm -rf ./napalm/*
+  wget "$3" -P ./napalm/test-target/
+  unzip ./napalm/test-target/"$4" -d ./napalm/test-target
+  docker-compose -f docker-compose.yml down
+  docker-compose -f docker-compose.yml rm -f
+  docker-compose -f docker-compose.yml build
+  docker-compose run docker-solidity-security-test-runner run-solidity-security-tests.sh Start-ConsenSys-Napalm-In-Docker-Container "$2"
+  docker stop $(docker ps -a -q) &&
+  docker rm $(docker ps -a -q)
+  docker compose -f docker-compose.yml down
+  docker compose -f docker-compose.yml rm -f
+  touch ./napalm/.gitkeep
+  TIMESTAMP2=$(date)
+  echo "This test run ended on $TIMESTAMP2."
+fi
+
+if [ "$1" == "Start-ConsenSys-Napalm-In-Docker-Container" ]; then
+  clear
+  echo
+  echo "------------------------------------[[[[ Start-ConsenSys-Napalm-In-Docker-Container ]]]]------------------------------------"
+  echo
+  ls -la /tmp/napalm/
+  yes | napalm run --help
+  echo "====================================" >> ./scan-output.log
+  echo "Now running...'napalm run detect'" >> ./scan-output.log
+  napalm run detect "$2" >> ./scan-output.log
+  echo "====================================" >> ./scan-output.log
+  echo "Now running...'napalm run direct'" >> ./scan-output.log
+  napalm run direct "$2" >> ./scan-output.log
+  echo "====================================" >> ./scan-output.log
+  echo "Now running...'napalm run inform'" >> ./scan-output.log
+  napalm run inform "$2" >> ./scan-output.log
+  echo "====================================" >> ./scan-output.log
+  cat ./scan-output.log | grep -v slither | grep -v locally > /tmp/napalm/napalm-output.log
+  cat /tmp/napalm/napalm-output.log
+  TIMESTAMP2=$(date)
+  echo "This run ended on $TIMESTAMP2."
+  exit
+fi
+
 usage_explanation() {
   echo
   echo
@@ -350,12 +398,13 @@ usage_explanation() {
   echo
   echo
   echo "---->>>> Option 3: Run All Test Setups And Focus On Security Vulnerability Tests  <<<<----"
-  echo "If you want to run only the Solidity vulnerability scanning tools, please run only the 'Setup-ConsenSys-Mythril-...' commands below."
+  echo "If you want to run only the Solidity vulnerability scanning tools, please run only the 'ConsenSys' commands below."
   echo
   echo
   echo "bash ./run-solidity-security-tests.sh Setup-ConsenSys-Mythril-And-Run-Vulnerability-Scanner-Tests ./mythril/test-target/solidity-by-example.github.io-gh-pages/contracts/src/call/Call.sol https://github.com/solidity-by-example/solidity-by-example.github.io/archive/refs/heads/gh-pages.zip gh-pages.zip"
   echo "bash ./run-solidity-security-tests.sh Stop-Containers-And-Setup-New-ConsenSys-Mythril-Docker-Container"
   echo "bash ./run-solidity-security-tests.sh Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests /tmp/mythril/test-target/solidity-by-example.github.io-gh-pages/contracts/src/call/Call.sol https://github.com/solidity-by-example/solidity-by-example.github.io/archive/refs/heads/gh-pages.zip gh-pages.zip"
+  echo "bash ./run-solidity-security-tests.sh Run-ConsenSys-Napalm-In-Docker-For-Vulnerability-Scanner-Tests /tmp/napalm/test-target/solidity-by-example.github.io-gh-pages/contracts/src/call/Call.sol https://github.com/solidity-by-example/solidity-by-example.github.io/archive/refs/heads/gh-pages.zip gh-pages.zip"
   echo
   echo
 }

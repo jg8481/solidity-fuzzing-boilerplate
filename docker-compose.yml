@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: "Dockerfile"
     volumes:
-      - "./*:/tmp"
+      - "$PWD:/tmp"
     # environment:
     #   - TEST_ENVIRONMENT=${TEST_ENVIRONMENT}
     command: -inMemory

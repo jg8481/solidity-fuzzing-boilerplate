@@ -1,4 +1,4 @@
-FROM python:3.9-slim-bookworm
+FROM python:3.12-slim-bookworm
 MAINTAINER Joshua Gorospe <joshua.gorospe@gmail.com>
 
 USER root
@@ -37,8 +37,8 @@ RUN apt-get update --fix-missing -y \
   && apt-get install python3-pip -y \
   && python3 -m pip install pip --upgrade \
   && python3 -m pip install wheel \
-  && pip install 'napalm-toolbox[slither]' \
-  && pip install napalm-core
+  && pip install napalm-core \
+  && pip install 'napalm-toolbox[slither]' 
 
 ADD run-solidity-security-tests.sh /usr/local/bin/run-solidity-security-tests.sh
 RUN chmod +x /usr/local/bin/run-solidity-security-tests.sh
