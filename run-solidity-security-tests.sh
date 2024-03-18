@@ -102,11 +102,11 @@ if [ "$1" == "Stop-Containers-And-Build-Docker-Container-With-Compose" ]; then
   echo "This build ended on $TIMESTAMP2."
 fi
 
-if [ "$1" == "Stop-Containers-And-Setup-New-ConsenSys-Mythril-Docker-Container" ]; then
+if [ "$1" == "Stop-Containers-And-Setup-New-Consensys-Mythril-Docker-Container" ]; then
   echo
-  echo "------------------------------------[[[[ Stop-Containers-And-Setup-New-ConsenSys-Mythril-Docker-Container ]]]]------------------------------------"
+  echo "------------------------------------[[[[ Stop-Containers-And-Setup-New-Consensys-Mythril-Docker-Container ]]]]------------------------------------"
   echo
-  echo "This command requires Docker to be installed first and is meant to be used with the Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests command. This run started on $TIMESTAMP."
+  echo "This command requires Docker to be installed first and is meant to be used with the Run-Consensys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests command. This run started on $TIMESTAMP."
   echo
   docker stop $(docker ps -a -q) &&
   docker rm $(docker ps -a -q)
@@ -274,10 +274,10 @@ if [ "$1" == "Setup-Echidna-Exploration-Mode-And-Run-Fuzz-Test" ]; then
   exit
 fi
 
-if [ "$1" == "Setup-ConsenSys-Mythril-And-Run-Vulnerability-Scanner-Tests" ]; then
+if [ "$1" == "Setup-Consensys-Mythril-And-Run-Vulnerability-Scanner-Tests" ]; then
   clear
   echo
-  echo "------------------------------------[[[[ Setup-ConsenSys-Mythril-And-Run-Vulnerability-Scanner-Tests ]]]]------------------------------------"
+  echo "------------------------------------[[[[ Setup-Consensys-Mythril-And-Run-Vulnerability-Scanner-Tests ]]]]------------------------------------"
   echo
   echo "This command will setup just Mythril for Solidity Smart Contract scanning. This run started on $TIMESTAMP."
   echo
@@ -296,10 +296,10 @@ if [ "$1" == "Setup-ConsenSys-Mythril-And-Run-Vulnerability-Scanner-Tests" ]; th
   exit
 fi
 
-if [ "$1" == "Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests" ]; then
+if [ "$1" == "Run-Consensys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests" ]; then
   clear
   echo
-  echo "------------------------------------[[[[ Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests ]]]]------------------------------------"
+  echo "------------------------------------[[[[ Run-Consensys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests ]]]]------------------------------------"
   echo
   echo "This command requires Docker to be installed first and will run only Mythril for Solidity Smart Contract scanning. This run started on $TIMESTAMP."
   echo
@@ -315,9 +315,9 @@ if [ "$1" == "Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests" ]
   exit
 fi
 
-if [ "$1" == "Run-ConsenSys-Napalm-In-Docker-For-Vulnerability-Scanner-Tests" ]; then
+if [ "$1" == "Run-Consensys-Napalm-In-Docker-For-Vulnerability-Scanner-Tests" ]; then
   echo
-  echo "------------------------------------[[[[ Run-ConsenSys-Napalm-In-Docker-For-Vulnerability-Scanner-Tests ]]]]------------------------------------"
+  echo "------------------------------------[[[[ Run-Consensys-Napalm-In-Docker-For-Vulnerability-Scanner-Tests ]]]]------------------------------------"
   echo
   echo "This command requires Docker to be installed first and will run only Napalm for Solidity Smart Contract scanning. This run started on $TIMESTAMP."
   echo
@@ -329,7 +329,7 @@ if [ "$1" == "Run-ConsenSys-Napalm-In-Docker-For-Vulnerability-Scanner-Tests" ];
   docker-compose -f docker-compose.yml down
   docker-compose -f docker-compose.yml rm -f
   docker-compose -f docker-compose.yml build
-  docker-compose run docker-solidity-security-test-runner run-solidity-security-tests.sh Start-ConsenSys-Napalm-In-Docker-Container "$2"
+  docker-compose run docker-solidity-security-test-runner run-solidity-security-tests.sh Start-Consensys-Napalm-In-Docker-Container "$2"
   docker stop $(docker ps -a -q) &&
   docker rm $(docker ps -a -q)
   docker compose -f docker-compose.yml down
@@ -339,10 +339,10 @@ if [ "$1" == "Run-ConsenSys-Napalm-In-Docker-For-Vulnerability-Scanner-Tests" ];
   echo "This test run ended on $TIMESTAMP2."
 fi
 
-if [ "$1" == "Start-ConsenSys-Napalm-In-Docker-Container" ]; then
+if [ "$1" == "Start-Consensys-Napalm-In-Docker-Container" ]; then
   clear
   echo
-  echo "------------------------------------[[[[ Start-ConsenSys-Napalm-In-Docker-Container ]]]]------------------------------------"
+  echo "------------------------------------[[[[ Start-Consensys-Napalm-In-Docker-Container ]]]]------------------------------------"
   echo
   ls -la /tmp/napalm/
   yes | napalm run --help
@@ -398,13 +398,13 @@ usage_explanation() {
   echo
   echo
   echo "---->>>> Option 3: Run All Test Setups And Focus On Security Vulnerability Tests  <<<<----"
-  echo "If you want to run only the Solidity vulnerability scanning tools, please run only the 'ConsenSys' commands below."
+  echo "If you want to run only the Solidity vulnerability scanning tools, please run only the 'Consensys' commands below."
   echo
   echo
-  echo "bash ./run-solidity-security-tests.sh Setup-ConsenSys-Mythril-And-Run-Vulnerability-Scanner-Tests ./mythril/test-target/solidity-by-example.github.io-gh-pages/contracts/src/call/Call.sol https://github.com/solidity-by-example/solidity-by-example.github.io/archive/refs/heads/gh-pages.zip gh-pages.zip"
-  echo "bash ./run-solidity-security-tests.sh Stop-Containers-And-Setup-New-ConsenSys-Mythril-Docker-Container"
-  echo "bash ./run-solidity-security-tests.sh Run-ConsenSys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests /tmp/mythril/test-target/solidity-by-example.github.io-gh-pages/contracts/src/call/Call.sol https://github.com/solidity-by-example/solidity-by-example.github.io/archive/refs/heads/gh-pages.zip gh-pages.zip"
-  echo "bash ./run-solidity-security-tests.sh Run-ConsenSys-Napalm-In-Docker-For-Vulnerability-Scanner-Tests /tmp/napalm/test-target/solidity-by-example.github.io-gh-pages/contracts/src/call/Call.sol https://github.com/solidity-by-example/solidity-by-example.github.io/archive/refs/heads/gh-pages.zip gh-pages.zip"
+  echo "bash ./run-solidity-security-tests.sh Setup-Consensys-Mythril-And-Run-Vulnerability-Scanner-Tests ./mythril/test-target/solidity-by-example.github.io-gh-pages/contracts/src/call/Call.sol https://github.com/solidity-by-example/solidity-by-example.github.io/archive/refs/heads/gh-pages.zip gh-pages.zip"
+  echo "bash ./run-solidity-security-tests.sh Stop-Containers-And-Setup-New-Consensys-Mythril-Docker-Container"
+  echo "bash ./run-solidity-security-tests.sh Run-Consensys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests /tmp/mythril/test-target/solidity-by-example.github.io-gh-pages/contracts/src/call/Call.sol https://github.com/solidity-by-example/solidity-by-example.github.io/archive/refs/heads/gh-pages.zip gh-pages.zip"
+  echo "bash ./run-solidity-security-tests.sh Run-Consensys-Napalm-In-Docker-For-Vulnerability-Scanner-Tests /tmp/napalm/test-target/solidity-by-example.github.io-gh-pages/contracts/src/call/Call.sol https://github.com/solidity-by-example/solidity-by-example.github.io/archive/refs/heads/gh-pages.zip gh-pages.zip"
   echo
   echo
 }
