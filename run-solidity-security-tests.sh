@@ -308,7 +308,9 @@ if [ "$1" == "Run-Consensys-Mythril-In-Docker-For-Vulnerability-Scanner-Tests" ]
   rm -rf ./mythril/*
   wget "$3" -P ./mythril/test-target/
   unzip ./mythril/test-target/"$4" -d ./mythril/test-target
-  docker run -v $(pwd):/tmp mythril/myth analyze "$2" -o markdown
+  echo "====================================" >> ./mythril/mythril-output.log
+  echo "Now running...'mythril/myth analyze "$2" -o markdown'" >> ./mythril/mythril-output.log
+  docker run -v $(pwd):/tmp mythril/myth analyze "$2" -o markdown >> ./mythril/mythril-output.log
   touch ./mythril/.gitkeep
   TIMESTAMP2=$(date)
   echo "This run ended on $TIMESTAMP2."
